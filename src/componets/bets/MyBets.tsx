@@ -1,44 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { Table } from 'antd';
+import { message, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-
-// Definindo os tipos para os dados
-interface ITableData {
-	id: number;
-	createdAt: string;
-	amount: number;
-	winAmount: number;
-	status: string;
-}
+import request from '../../api/request';
+import { useLocation } from 'react-router-dom';
+import { BetType, MyBetsResponseType } from '../../types/InterfaceType';
+import Title from 'antd/es/typography/Title';
 
 const MyBets: React.FC = () => {
-	const [data, setData] = useState<ITableData[]>([]);
+	const location = useLocation();
+	const accessToken = location.state.accessToken;
+
+	const [dataSource, setDataSource] = useState<MyBetsResponseType>();
 	const [loading, setLoading] = useState<boolean>(false);
 
-	// Simulando a recuperação dos dados (pode ser substituído por uma chamada API)
 	useEffect(() => {
+		if (!accessToken) {
+			return;
+		}
 		setLoading(true);
-		// Simulação de dados com 100 registros
-		setTimeout(() => {
-			const mockData: ITableData[] = Array.from({ length: 100 }, (_, index) => ({
-				id: index + 1,
-				createdAt: new Date().toISOString(),
-				amount: Math.floor(Math.random() * 1000) + 1,
-				winAmount: Math.floor(Math.random() * 500) + 1,
-				status: Math.random() > 0.5 ? 'Vencido' : 'Pendente',
-			}));
-			setData(mockData);
-			setLoading(false);
-		}, 1000);
+		const headers: HeadersInit = {
+			Authorization: `Bearer ${accessToken}`,
+		};
+
+		request
+			.get(`/my-bets?page=${1}&limit=${10}`, headers)
+			.then((response) => {
+				if (response) {
+					setLoading(false);
+					const resp: MyBetsResponseType = response as MyBetsResponseType;
+					setDataSource(resp);
+				}
+			})
+			.catch(() => {
+				message.error('Não foi possivel carregar as informações');
+			});
 	}, []);
 
-	// Configuração das colunas da tabela
-	const columns: ColumnsType<ITableData> = [
+	const columns: ColumnsType<BetType> = [
 		{
 			title: 'ID',
 			dataIndex: 'id',
 			key: 'id',
-			sorter: (a, b) => a.id - b.id,
 		},
 		{
 			title: 'Data de Criação',
@@ -59,32 +61,38 @@ const MyBets: React.FC = () => {
 			dataIndex: 'winAmount',
 			key: 'winAmount',
 			sorter: (a, b) => a.winAmount - b.winAmount,
-			render: (text) => `R$ ${text.toFixed(2)}`,
 		},
 		{
 			title: 'Status',
 			dataIndex: 'status',
 			key: 'status',
 			filters: [
-				{ text: 'Vencido', value: 'Vencido' },
-				{ text: 'Pendente', value: 'Pendente' },
+				{ text: 'Win', value: 'Win' },
+				{ text: 'Bet', value: 'Bet' },
 			],
-			onFilter: (value, record) => record.status.includes(value as string),
 		},
 	];
 
 	return (
-		<div style={{ padding: '20px' }}>
-			<h2>Dados da Tabela</h2>
+		<div
+			style={{
+				padding: '20px',
+				backgroundColor: '#fff',
+				borderRadius: '8px',
+				boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+			}}
+		>
+			<Title level={2} style={{ textAlign: 'center', marginBottom: '20px' }}>
+				Minhas Apostas
+			</Title>
 			<Table
 				columns={columns}
-				dataSource={data}
+				dataSource={dataSource?.data}
 				rowKey="id"
-				pagination={{
-					pageSize: 10,
-				}}
+				pagination={{ pageSize: 10 }}
 				loading={loading}
 				bordered
+				scroll={{ x: true }} // Permite rolagem horizontal em telas menores
 				onChange={(pagination, filters, sorter) => {
 					console.log(pagination, filters, sorter);
 				}}

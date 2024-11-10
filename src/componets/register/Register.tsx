@@ -103,16 +103,15 @@ const Register: React.FC = () => {
 				request
 					.post<string, RegisterResponseType>('/register', body)
 					.then((response) => {
-						console.log(response.message);
 						if (response.id) {
-							message.success('Cadastro realizado com sucesso!' + response.name);
+							message.success('Cadastro realizado com sucesso!');
 
 							navigate('/login');
 						} else {
 							message.error(response.message);
 						}
 					})
-					.then((res) => {
+					.catch((res) => {
 						message.error('Não foi possivel realizar seu cadastro!');
 						console.error(res);
 					});

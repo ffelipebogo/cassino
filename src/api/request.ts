@@ -12,21 +12,39 @@ const fetchRequest = <TResponse>(url: string, config: RequestInit = {}): Promise
 		.then((data) => data as TResponse);
 
 const request = {
-	get: <TResponse>(url: string) =>
-		fetchRequest<TResponse>(url, { method: 'GET', headers: defaultHeaders }),
+	get: <TResponse>(url: string, customHeaders?: HeadersInit) =>
+		fetchRequest<TResponse>(url, {
+			method: 'GET',
+			headers: { ...defaultHeaders, ...customHeaders },
+		}),
 
-	delete: <TResponse>(url: string) =>
-		fetchRequest<TResponse>(url, { method: 'DELETE', headers: defaultHeaders }),
+	delete: <TResponse>(url: string, customHeaders?: HeadersInit) =>
+		fetchRequest<TResponse>(url, {
+			method: 'DELETE',
+			headers: { ...defaultHeaders, ...customHeaders },
+		}),
 
-	post: <TBody extends BodyInit, TResponse>(url: string, body: TBody) =>
+	post: <TBody extends BodyInit, TResponse>(
+		url: string,
+		body: TBody,
+		customHeaders?: HeadersInit,
+	) =>
 		fetchRequest<TResponse>(url, {
 			method: 'POST',
 			body,
-			headers: defaultHeaders,
+			headers: { ...defaultHeaders, ...customHeaders },
 		}),
 
-	put: <TBody extends BodyInit, TResponse>(url: string, body: TBody) =>
-		fetchRequest<TResponse>(url, { method: 'PUT', body, headers: defaultHeaders }),
+	put: <TBody extends BodyInit, TResponse>(
+		url: string,
+		body: TBody,
+		customHeaders?: HeadersInit,
+	) =>
+		fetchRequest<TResponse>(url, {
+			method: 'PUT',
+			body,
+			headers: { ...defaultHeaders, ...customHeaders },
+		}),
 };
 
 export enum ERequestStatus {

@@ -46,19 +46,6 @@ export type LoginResponseType = {
 	message?: string;
 };
 
-export type BetResponseType = {
-	transcation: string;
-	currency: string;
-	balance: number;
-	winAmount: number;
-};
-
-export type DeleteBetResponseType = {
-	transcation: string;
-	balance: number;
-	currency: string;
-};
-
 export type BetType = {
 	id: string;
 	createdAt: string;
@@ -67,23 +54,60 @@ export type BetType = {
 	status: number;
 };
 
+export type BetResponseType = {
+	transactionId: string;
+	currency: string;
+	balance: number;
+	winAmount: number;
+	message?: string;
+};
+
 export type MyBetsResponseType = {
-	data: BetType;
+	data: BetType[];
 	total: number;
 	page: number;
 	limit: number;
+	message?: string;
+};
+
+export type DeleteBetResponseType = {
+	transcation: string;
+	balance: number;
+	currency: string;
+	message?: string;
 };
 
 export type TransactionType = {
 	id: string;
 	createdAt: string;
 	amount: number;
-	type: number;
+	type: string;
 };
 
 export type MyTransactionType = {
-	data: TransactionType;
+	data: TransactionType[];
 	total: number;
 	page: number;
 	limit: number;
 };
+
+export type DataType = {
+	id: string;
+	dateTime: string;
+	type: string;
+	value: number;
+};
+
+export interface ModalTableProps {
+	isModalVisible: boolean;
+	page: number;
+	limit: number;
+	onClose: () => void;
+	onPageChange: (page: number, limit: number) => void;
+	accessToken: string;
+}
+
+export interface IPagination {
+	current: number;
+	pageSize: number;
+}

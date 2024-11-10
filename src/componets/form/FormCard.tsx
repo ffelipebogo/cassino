@@ -17,26 +17,32 @@ const FormCard = <T extends object>({
 				justifyContent: 'center',
 				alignItems: 'center',
 				height: '100vh',
-				boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4)',
-				borderRadius: '8px',
 				backgroundColor: 'rgb(183 183 183)',
+				padding: '10px',
 			}}
 		>
 			<div
 				style={{
 					maxWidth: '400px',
+					width: '100%',
 					margin: '0 auto',
-					padding: '50px',
-					boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4)', // Adicionando box-shadow
-					borderRadius: '8px', // Bordas arredondadas
-					backgroundColor: '#fff', // Fundo branco
+					padding: '20px',
+					boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4)',
+					borderRadius: '8px',
+					backgroundColor: '#fff',
 				}}
 			>
 				<div style={{ textAlign: 'center', padding: '20px' }}>
-					<Title level={2} style={{ fontWeight: 'bold', color: '#1890ff' }}>
+					<Title
+						level={2}
+						style={{ fontWeight: 'bold', color: '#1890ff', fontSize: '1.5rem' }}
+					>
 						{title}
 					</Title>
-					<Title level={3} style={{ fontWeight: 'normal', color: '#888' }}>
+					<Title
+						level={3}
+						style={{ fontWeight: 'normal', color: '#888', fontSize: '1.2rem' }}
+					>
 						{subtitle}
 					</Title>
 				</div>

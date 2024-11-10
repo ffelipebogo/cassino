@@ -60,18 +60,16 @@ const Login: React.FC = () => {
 			request
 				.post<string, LoginResponseType>('/login', body)
 				.then((response) => {
-					console.log(response.message);
 					if (response.id) {
 						message.success('Login feito! Boa sorte!!!');
 
-						navigate('/', { state: { acessToken: response.accessToken } });
+						navigate('/', { state: { player: response } });
 					} else {
 						message.error(response.message);
 					}
 				})
-				.catch((res) => {
+				.catch(() => {
 					message.error('Credenciais inválidas!');
-					console.error(res);
 				});
 
 			setLoading(false);
