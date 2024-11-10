@@ -1,0 +1,10 @@
+{
+	"extends": [
+		"eslint:recommended",
+		"plugin:prettier/recommended"
+	],
+	"printWidth": 100,
+	"singleQuote": true,
+	"trailingComma": "all",
+	"useTabs": true
+}

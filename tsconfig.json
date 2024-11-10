@@ -1,0 +1,15 @@
+{
+	"files": [],
+	"references": [
+		{
+			"path": "./tsconfig.app.json"
+		},
+		{
+			"path": "./tsconfig.node.json"
+		}
+	],
+	"compilerOptions": {
+		"strict": false, // Desabilita o modo estrito que pode afetar tipos de objetos
+		"noImplicitAny": false // Permite tipos implícitos any (que pode afetar objetos)
+	}
+}
