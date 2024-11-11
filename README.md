@@ -7,7 +7,6 @@ Este é um projeto front-end desenvolvido com **React**, **TypeScript** e **Vite
 
 - [Pré-requisitos](#pré-requisitos)
 - [Instalação](#instalação)
-- [Scripts Disponíveis](#scripts-disponíveis)
 
 ## Pré-requisitos
 
@@ -19,21 +18,23 @@ Certifique-se de ter o **Node.js** (versão ^20) e o **npm** ou **Yarn** instala
 ## Instalação
 
 1. Clone este repositório:
-
-   ```bash
-   [git clone https://github.com/seu-usuario/nome-do-projeto.git](https://github.com/ffelipebogo/cassino.git)
-   cd cassino
-   ```
+	
+	```bash
+	[git clone https://github.com/seu-usuario/nome-do-projeto.git](https://github.com/ffelipebogo/cassino.git)
+	cd cassino
+	```
+ 
 2. Instale as dependências do projeto:
-  ```bash
-   npm install
+	```bash
+	npm install
 	# ou
 	yarn install
-   ```
-4. Inicie o projeto em modo de desenvolvimento:
- 	```bash	
- 	npm run start
+	```
+ 
+3. Inicie o projeto em modo de desenvolvimento:
+	```bash	
+	npm run start
 	# ou
 	yarn start
-   ```
+	```
 
