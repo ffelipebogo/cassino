@@ -8,10 +8,6 @@ Este é um projeto front-end desenvolvido com **React**, **TypeScript** e **Vite
 - [Pré-requisitos](#pré-requisitos)
 - [Instalação](#instalação)
 - [Scripts Disponíveis](#scripts-disponíveis)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Contribuição](#contribuição)
-- [Licença](#licença)
 
 ## Pré-requisitos
 
