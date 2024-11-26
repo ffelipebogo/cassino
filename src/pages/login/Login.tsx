@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import { Input, message } from 'antd';
-import { LockOutlined, MailOutlined } from '@ant-design/icons';
-import FormCard from './../form/FormCard';
-import { Field, LoginResponseType, UserLogin } from '../../types/InterfaceType';
 import { useNavigate } from 'react-router-dom';
+import { LockOutlined, MailOutlined } from '@ant-design/icons';
+
 import request from '../../api/request';
+import { CookieServices } from './../../services/CookieService';
+import FormCard from '../../componets/form/FormCard';
+import { Field, IPlayerState, UserLogin } from '../../types/Interfaces';
+import { addPlayer } from '../../store/slices/playerSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
 
 const Login: React.FC = () => {
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
+
+	const dispatch = useDispatch<AppDispatch>();
 
 	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.target.value);
@@ -58,12 +65,14 @@ const Login: React.FC = () => {
 			const body = JSON.stringify(values);
 
 			request
-				.post<string, LoginResponseType>('/login', body)
+				.post<string, IPlayerState>('/login', body)
 				.then((response) => {
 					if (response.id) {
-						message.success('Login feito! Boa sorte!!!');
+						message.success('Login feito, boa sorte!!!');
 
-						navigate('/', { state: { player: response } });
+						CookieServices.save('accessToken', response.accessToken, 1);
+						dispatch(addPlayer(response));
+						navigate('/');
 					} else {
 						message.error(response.message);
 					}

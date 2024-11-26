@@ -1,6 +1,18 @@
 import { Rule } from 'antd/es/form';
 import { ReactNode } from 'react';
 
+interface Common {
+	id: string;
+	message?: string;
+}
+
+export interface IPlayerState extends Common {
+	name: string;
+	balance: number;
+	currency: string;
+	accessToken: string;
+}
+
 export interface IFormCardProps<T> {
 	title: string;
 	subtitle?: string;
@@ -34,15 +46,6 @@ export type UserLogin = {
 export type RegisterResponseType = {
 	id?: string;
 	name?: string;
-	message?: string;
-};
-
-export type LoginResponseType = {
-	id?: string;
-	name?: string;
-	balance?: number;
-	currency?: string;
-	accessToken?: string;
 	message?: string;
 };
 

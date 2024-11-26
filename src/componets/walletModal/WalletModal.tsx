@@ -44,7 +44,7 @@ const ModalTable: React.FC<ModalTableProps> = ({
 					setFilteredData(resp.data);
 				}
 			})
-			.catch((er) => {
+			.catch(() => {
 				message.error('Não foi possivel carregar as informações');
 			});
 	}, [accessToken]);

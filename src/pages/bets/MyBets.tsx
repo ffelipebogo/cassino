@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { message, Table } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import request from '../../api/request';
-import { useLocation } from 'react-router-dom';
-import { BetType, MyBetsResponseType } from '../../types/InterfaceType';
 import Title from 'antd/es/typography/Title';
+import request from '../../api/request';
+import { BetType, MyBetsResponseType } from '../../types/InterfaceType';
+import { ColumnsType } from 'antd/es/table';
+import { message, Table } from 'antd';
+import { useLocation } from 'react-router-dom';
 
 const MyBets: React.FC = () => {
 	const location = useLocation();
@@ -70,6 +70,14 @@ const MyBets: React.FC = () => {
 				{ text: 'Win', value: 'Win' },
 				{ text: 'Bet', value: 'Bet' },
 			],
+		},
+		{
+			title: 'Action',
+			dataIndex: 'id',
+			key: 'x',
+			render: () => {
+				return <a>Delete</a>;
+			},
 		},
 	];
 

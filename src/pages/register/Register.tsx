@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input, message } from 'antd';
 import { UserOutlined, MailOutlined, LockOutlined } from '@ant-design/icons';
-import FormCard from './../form/FormCard';
+import FormCard from './../../componets/form/FormCard';
 import { Rule } from 'antd/es/form';
 import { Field, RegisterForm, RegisterResponseType } from '../../types/InterfaceType';
 import { useNavigate } from 'react-router-dom';

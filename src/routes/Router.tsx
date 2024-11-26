@@ -1,8 +1,8 @@
 import React, { lazy, Suspense } from 'react';
+import Login from '../pages/login/Login';
+import MyBets from '../pages/bets/MyBets';
+import Register from '../pages/register/Register';
 import { Routes, Route } from 'react-router-dom';
-import MyBets from '../componets/bets/MyBets';
-import Register from '../componets/register/Register';
-import Login from '../componets/login/Login';
 
 const Home = lazy(() => import('../pages/home/Home'));
 

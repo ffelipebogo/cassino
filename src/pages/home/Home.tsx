@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Form, Input, Layout, message, Typography } from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { BetResponseType, LoginResponseType } from '../../types/InterfaceType';
+import { useNavigate } from 'react-router-dom';
+import { BetResponseType } from '../../types/Interfaces';
 import { DollarOutlined, GroupOutlined, LoginOutlined } from '@ant-design/icons';
 import ModalTable from '../../componets/walletModal/WalletModal';
 import request from '../../api/request';
+import { CookieServices } from './../../services/CookieService';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
 
 const Home: React.FC = () => {
-	const [isFirstAccess, setIsFirstAccess] = useState(true);
+	const [isModalVisible, setIsModalVisible] = useState(false);
 
-	const [win, setWin] = useState<boolean>(false);
 	const [balance, setBalance] = useState<number>(0);
 	const [amount, setAmount] = useState<number | undefined>(undefined);
 
@@ -23,26 +25,13 @@ const Home: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 
 	const navigate = useNavigate();
-	const location = useLocation();
-
-	const [isModalVisible, setIsModalVisible] = useState(false);
-
-	// useEffect(() => {
-	// 	localStorage.removeItem('token');
-	// }, []);
+	const player = useSelector((state: RootState) => state.player);
 
 	useEffect(() => {
-		// if (isFirstAccess) {
-		// 	setIsFirstAccess(false);
-		// 	return;
-		// }
+		const token = CookieServices.get('accessToken');
 
-		const token = localStorage.getItem('token') || '';
-
-		if (location.state?.player && location.state.player.accessToken !== token && token != '') {
-			setBalance(location.state.player.balance);
-			localStorage.setItem('token', location.state.player.accessToken);
-			setAccessToken(location.state.player.accessToken);
+		if (token != undefined) {
+			setAccessToken(token);
 		}
 	}, []);
 
@@ -96,9 +85,6 @@ const Home: React.FC = () => {
 								message.success('Aposta realizada com sucesso!');
 								setBalance(response.balance);
 								setAmount(undefined);
-								if (response.winAmount) {
-									setWin(true);
-								}
 							} else {
 								message.error(response.message);
 							}
@@ -116,8 +102,8 @@ const Home: React.FC = () => {
 		}
 	};
 
-	return (
-		<Layout style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
+	const onRenderHeader = () => {
+		return (
 			<Header
 				style={{
 					display: 'flex',
@@ -145,7 +131,7 @@ const Home: React.FC = () => {
 								alignItems: 'center',
 							}}
 						>
-							Saldo R$ {balance}
+							Saldo {player.currency} {player.balance}
 						</Typography.Text>
 					</div>
 				)}
@@ -190,6 +176,12 @@ const Home: React.FC = () => {
 					)}
 				</div>
 			</Header>
+		);
+	};
+
+	return (
+		<Layout style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
+			{onRenderHeader()}
 
 			<Content
 				style={{
