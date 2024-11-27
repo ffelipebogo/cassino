@@ -5,9 +5,9 @@ import { LockOutlined, MailOutlined } from '@ant-design/icons';
 
 import request from '../../api/request';
 import { CookieServices } from './../../services/CookieService';
-import FormCard from '../../componets/form/FormCard';
+import AuthForm from '../../componets/form/AuthForm';
 import { Field, IPlayerState, UserLogin } from '../../types/Interfaces';
-import { addPlayer } from '../../store/slices/playerSlice';
+import { setPlayer } from '../../store/slices/playerSlice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
 
@@ -25,6 +25,35 @@ const Login: React.FC = () => {
 
 	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setPassword(e.target.value);
+	};
+
+	const onFinish = (values: UserLogin) => {
+		setLoading(true);
+		setTimeout(() => {
+			const body = JSON.stringify(values);
+
+			request
+				.post<string, IPlayerState>('/login', body)
+				.then((response) => {
+					if (response.id) {
+						message.success('Login feito, boa sorte!!!');
+
+						CookieServices.save('accessToken', response.accessToken, 1);
+
+						response.isFirstAccess = false;
+						dispatch(setPlayer(response));
+
+						navigate('/');
+					} else {
+						message.error(response.message);
+					}
+				})
+				.catch(() => {
+					message.error('Credenciais inválidas!');
+				});
+
+			setLoading(false);
+		}, 1000);
 	};
 
 	const fields: Field[] = [
@@ -59,34 +88,8 @@ const Login: React.FC = () => {
 		},
 	];
 
-	const onFinish = (values: UserLogin) => {
-		setLoading(true);
-		setTimeout(() => {
-			const body = JSON.stringify(values);
-
-			request
-				.post<string, IPlayerState>('/login', body)
-				.then((response) => {
-					if (response.id) {
-						message.success('Login feito, boa sorte!!!');
-
-						CookieServices.save('accessToken', response.accessToken, 1);
-						dispatch(addPlayer(response));
-						navigate('/');
-					} else {
-						message.error(response.message);
-					}
-				})
-				.catch(() => {
-					message.error('Credenciais inválidas!');
-				});
-
-			setLoading(false);
-		}, 1000);
-	};
-
 	return (
-		<FormCard
+		<AuthForm
 			title="Bem-vindo de volta"
 			subtitle="Faça seu login"
 			fields={fields}

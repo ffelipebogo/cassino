@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IPlayerState } from '../../types/Interfaces';
 
 const initialState: IPlayerState = {
@@ -7,22 +7,23 @@ const initialState: IPlayerState = {
 	balance: 0,
 	currency: '',
 	accessToken: '',
+	isFirstAccess: true,
 };
 
 const playerSlice = createSlice({
 	name: 'player',
 	initialState,
 	reducers: {
-		addPlayer: (state, action: { payload: IPlayerState }) => {
-			state.id = action.payload.id;
-			state.name = action.payload.name;
-			state.balance = action.payload.balance;
-			state.currency = action.payload.currency;
-			state.message = action.payload.message;
+		setPlayer: (_state, action: PayloadAction<IPlayerState>) => {
+			return { ...action.payload, isFirstAccess: false };
 		},
+		updateBalance: (state, action: PayloadAction<number>) => {
+			state.balance = action.payload; // Atualiza o saldo do jogador
+		},
+		resetPlayer: () => initialState,
 	},
 });
 
-export const { addPlayer } = playerSlice.actions;
+export const { setPlayer, updateBalance, resetPlayer } = playerSlice.actions;
 
 export default playerSlice.reducer;

@@ -1,15 +1,15 @@
 import { Form, Button } from 'antd';
-import { IFormCardProps } from '../../types/InterfaceType';
+import { IAuthFormProps } from '../../types/Interfaces';
 import Title from 'antd/es/typography/Title';
 
-const FormCard = <T extends object>({
+const AuthForm = <T extends object>({
 	title,
 	subtitle,
 	fields,
 	onFinish,
 	loading,
 	buttonText,
-}: IFormCardProps<T>) => {
+}: IAuthFormProps<T>) => {
 	return (
 		<div
 			style={{
@@ -75,4 +75,4 @@ const FormCard = <T extends object>({
 	);
 };
 
-export default FormCard;
+export default AuthForm;

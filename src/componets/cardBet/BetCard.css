@@ -1,0 +1,48 @@
+/* Estilo base do Card */
+.bet-card {
+	transition: border-color 0.3s, box-shadow 0.3s;
+	border-width: 2px;
+	border-style: solid;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para Ganho */
+.bet-card.win {
+	border-color: #52c41a; /* Verde para ganho */
+	animation: win-glow 1.5s infinite;
+}
+
+/* Estilo para Perda */
+.bet-card.lost {
+	border-color: #ff4d4f; /* Vermelho para perda */
+	animation: lost-shake 0.5s;
+}
+
+/* Animação para ganho */
+@keyframes win-glow {
+	0% {
+		box-shadow: 0 0 10px #52c41a;
+	}
+	50% {
+		box-shadow: 0 0 20px #52c41a;
+	}
+	100% {
+		box-shadow: 0 0 10px #52c41a;
+	}
+}
+
+/* Animação para perda */
+@keyframes lost-shake {
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+	20%,
+	60% {
+		transform: translateX(-5px);
+	}
+	40%,
+	80% {
+		transform: translateX(5px);
+	}
+}

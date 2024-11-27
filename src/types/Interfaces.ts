@@ -11,15 +11,21 @@ export interface IPlayerState extends Common {
 	balance: number;
 	currency: string;
 	accessToken: string;
+	isFirstAccess?: boolean;
 }
 
-export interface IFormCardProps<T> {
+export interface IAuthFormProps<T> {
 	title: string;
 	subtitle?: string;
 	fields: Field[];
 	onFinish: (values: T) => void;
 	loading: boolean;
 	buttonText: string;
+}
+
+export interface IBetCardProps {
+	title: string;
+	isLogged: boolean;
 }
 
 export type RegisterForm = {

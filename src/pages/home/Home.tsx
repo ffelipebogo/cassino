@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Form, Input, Layout, message, Typography } from 'antd';
+import { Button, Layout, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { BetResponseType } from '../../types/Interfaces';
 import { DollarOutlined, GroupOutlined, LoginOutlined } from '@ant-design/icons';
 import ModalTable from '../../componets/walletModal/WalletModal';
-import request from '../../api/request';
 import { CookieServices } from './../../services/CookieService';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import BetCard from '../../componets/cardBet/BetCard';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -15,25 +14,21 @@ const { Title } = Typography;
 const Home: React.FC = () => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
 
-	const [balance, setBalance] = useState<number>(0);
-	const [amount, setAmount] = useState<number | undefined>(undefined);
-
 	const [page, setPage] = useState(1);
 	const [limit, setLimit] = useState(10);
 
 	const [accessToken, setAccessToken] = useState<string>('');
-	const [loading, setLoading] = useState(false);
 
 	const navigate = useNavigate();
-	const player = useSelector((state: RootState) => state.player);
+	const statePlayer = useSelector((state: RootState) => state.player);
 
 	useEffect(() => {
 		const token = CookieServices.get('accessToken');
 
-		if (token != undefined) {
+		if (token != undefined && !statePlayer.isFirstAccess) {
 			setAccessToken(token);
 		}
-	}, []);
+	}, [statePlayer.isFirstAccess]);
 
 	const handleLogin = () => {
 		navigate('/login');
@@ -58,48 +53,6 @@ const Home: React.FC = () => {
 	const handlePageChange = (newPage: number, newLimit: number) => {
 		setPage(newPage);
 		setLimit(newLimit);
-	};
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const val = parseFloat(e.target.value);
-
-		if (!isNaN(val)) {
-			setAmount(val);
-		} else {
-			setAmount(undefined);
-		}
-	};
-
-	const handleSubmit = () => {
-		if (amount && amount >= 1) {
-			setLoading(true);
-			setTimeout(() => {
-				if (amount && accessToken && balance > amount) {
-					const body = `{"amount": ${amount}}`;
-					const autorization: HeadersInit = { Authorization: `Bearer ${accessToken}` };
-
-					request
-						.post<string, BetResponseType>('/bet', body, autorization)
-						.then((response) => {
-							if (response.transactionId) {
-								message.success('Aposta realizada com sucesso!');
-								setBalance(response.balance);
-								setAmount(undefined);
-							} else {
-								message.error(response.message);
-							}
-						})
-						.catch(() => {
-							message.error('Não foi possivel concluir sua aposta.');
-						});
-				} else {
-					message.error('Verifique seu saldo!');
-				}
-				setLoading(false);
-			}, 1000);
-		} else {
-			message.error('O valor deve ser maior que 1,00.');
-		}
 	};
 
 	const onRenderHeader = () => {
@@ -131,7 +84,7 @@ const Home: React.FC = () => {
 								alignItems: 'center',
 							}}
 						>
-							Saldo {player.currency} {player.balance}
+							Saldo {statePlayer.currency} {statePlayer.balance}
 						</Typography.Text>
 					</div>
 				)}
@@ -193,82 +146,37 @@ const Home: React.FC = () => {
 					maxWidth: '100%',
 				}}
 			>
-				{accessToken && (
-					<Card
-						title="Aposte agora !!!"
-						styles={{
-							header: {
-								fontWeight: 'bold',
-								color: '#1890ff',
-								fontSize: '1.2rem',
-								textAlign: 'center',
-							},
-						}}
+				{
+					<div
 						style={{
-							maxWidth: 500,
+							display: 'flex',
 							width: '100%',
-							margin: '20px auto',
-							borderRadius: '8px',
-							boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-							overflow: 'hidden',
+							flexDirection: 'row',
+							flexWrap: 'wrap',
 						}}
 					>
-						<p
-							style={{
-								fontWeight: 'normal',
-								color: '#888',
-								fontSize: '1rem',
-								marginBottom: 20,
-								textAlign: 'center',
-							}}
-						>
-							Corintians X Flamengo
-						</p>
-						<Form onFinish={handleSubmit} layout="vertical">
-							<Form.Item
-								label={
-									<p style={{ fontWeight: 'normal', color: '#888' }}>
-										Valor da aposta
-									</p>
-								}
-								name="value"
-								rules={[
-									{ required: true, message: 'Este campo é obrigatório!' },
-									{ min: 0.99, message: 'O valor deve ser maior que 1,00.' },
-								]}
-							>
-								<Input
-									inputMode="numeric"
-									value={amount}
-									onChange={handleChange}
-									placeholder="Digite um valor maior que 1,00"
-									style={{
-										borderRadius: '8px',
-										padding: '10px',
-										fontSize: '0.9rem',
-										border: '1px solid #d9d9d9',
-									}}
-								/>
-							</Form.Item>
-							<Button
-								type="primary"
-								htmlType="submit"
-								block
-								style={{
-									fontSize: '0.9rem',
-									padding: '10px',
-									marginTop: '10px',
-									borderRadius: '8px',
-									backgroundColor: '#1890ff',
-									borderColor: '#1890ff',
-								}}
-								loading={loading}
-							>
-								Apostar
-							</Button>
-						</Form>
-					</Card>
-				)}
+						<BetCard
+							key={1}
+							title={'Real Madrid x Barcelona'}
+							isLogged={!statePlayer.isFirstAccess}
+						></BetCard>
+						<BetCard
+							key={2}
+							title={'Liverpol x Man. City'}
+							isLogged={!statePlayer.isFirstAccess}
+						></BetCard>
+						<BetCard
+							key={3}
+							title={'Brasil x Argentina'}
+							isLogged={!statePlayer.isFirstAccess}
+						></BetCard>
+						<BetCard
+							key={4}
+							title={'Paraguai x Uruguai'}
+							isLogged={!statePlayer.isFirstAccess}
+						></BetCard>
+					</div>
+				}
 
 				<ModalTable
 					isModalVisible={isModalVisible}
