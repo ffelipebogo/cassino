@@ -1,40 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import Title from 'antd/es/typography/Title';
 import request from '../../api/request';
-import { BetType, MyBetsResponseType } from '../../types/InterfaceType';
+import { BetType, MyBetsResponseType } from '../../types/Interfaces';
 import { ColumnsType } from 'antd/es/table';
 import { message, Table } from 'antd';
-import { useLocation } from 'react-router-dom';
+import { RootState } from '../../store/store';
+import { useSelector } from 'react-redux';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const MyBets: React.FC = () => {
-	const location = useLocation();
-	const accessToken = location.state.accessToken;
+	const statePlayer = useSelector((state: RootState) => state.player);
 
 	const [dataSource, setDataSource] = useState<MyBetsResponseType>();
 	const [loading, setLoading] = useState<boolean>(false);
+	const [transactionId, setTransactionId] = useState<string | undefined>(undefined);
 
 	useEffect(() => {
-		if (!accessToken) {
-			return;
-		}
-		setLoading(true);
 		const headers: HeadersInit = {
-			Authorization: `Bearer ${accessToken}`,
+			Authorization: `Bearer ${statePlayer.accessToken}`,
 		};
+		setLoading(true);
 
 		request
 			.get(`/my-bets?page=${1}&limit=${10}`, headers)
 			.then((response) => {
 				if (response) {
-					setLoading(false);
-					const resp: MyBetsResponseType = response as MyBetsResponseType;
-					setDataSource(resp);
+					setDataSource(response as MyBetsResponseType);
 				}
 			})
 			.catch(() => {
 				message.error('Não foi possivel carregar as informações');
+			})
+			.finally(() => {
+				setLoading(false);
 			});
 	}, []);
+
+	const handleDelete = () => {
+		if (transactionId != undefined) {
+			setLoading(true);
+			const headers: HeadersInit = {
+				Authorization: `Bearer ${statePlayer.accessToken}`,
+			};
+
+			request
+				.delete(`/my-bet/${transactionId}`, headers)
+				.then((response) => {
+					console.log(response);
+				})
+				.catch(() => {
+					message.error('Não foi possivel cancelar aposta');
+				})
+				.finally(() => {
+					setLoading(false);
+					setTransactionId(undefined);
+				});
+		}
+	};
 
 	const columns: ColumnsType<BetType> = [
 		{
@@ -61,6 +83,7 @@ const MyBets: React.FC = () => {
 			dataIndex: 'winAmount',
 			key: 'winAmount',
 			sorter: (a, b) => a.winAmount - b.winAmount,
+			render: (text) => `R$ ${text ? text.toFixed(2) : 0}`,
 		},
 		{
 			title: 'Status',
@@ -73,10 +96,15 @@ const MyBets: React.FC = () => {
 		},
 		{
 			title: 'Action',
-			dataIndex: 'id',
-			key: 'x',
-			render: () => {
-				return <a>Delete</a>;
+			key: 'action',
+			render: (_, record) => {
+				setTransactionId(record.id);
+				return (
+					<DeleteOutlined
+						onClick={handleDelete}
+						style={{ fontSize: '22px', color: 'red' }}
+					/>
+				);
 			},
 		},
 	];

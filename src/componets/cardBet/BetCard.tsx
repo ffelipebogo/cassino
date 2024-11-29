@@ -69,20 +69,21 @@ const BetCard = ({ title, isLogged }: IBetCardProps) => {
 								} else {
 									setStatus('lost');
 								}
-
-								resetInput();
 							} else {
 								message.error(response.message);
 							}
 						})
 						.catch(() => {
 							message.error('Não foi possivel concluir sua aposta.');
+						})
+						.finally(() => {
+							setLoading(false);
 						});
 				} else {
 					message.error('Verifique seu saldo!');
 				}
-				setLoading(false);
-			}, 1000);
+				resetInput();
+			}, 500);
 		} else {
 			message.error('O valor deve ser maior que 1,00.');
 		}
@@ -123,7 +124,6 @@ const BetCard = ({ title, isLogged }: IBetCardProps) => {
 				</p>
 				<Form form={form} onFinish={handleSubmit} layout="vertical">
 					<>
-						{' '}
 						{isLogged && (
 							<Form.Item
 								label={
