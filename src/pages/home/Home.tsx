@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Layout, Typography } from 'antd';
+import { Button, FloatButton, Layout, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { DollarOutlined, GroupOutlined, LoginOutlined } from '@ant-design/icons';
+import {
+	DollarOutlined,
+	FormatPainterOutlined,
+	GroupOutlined,
+	LoginOutlined,
+} from '@ant-design/icons';
 import ModalTable from '../../componets/walletModal/WalletModal';
 import { CookieServices } from './../../services/CookieService';
 import { useSelector } from 'react-redux';
@@ -13,9 +18,6 @@ const { Title } = Typography;
 
 const Home: React.FC = () => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
-
-	const [page, setPage] = useState(1);
-	const [limit, setLimit] = useState(10);
 
 	const [accessToken, setAccessToken] = useState<string>('');
 
@@ -38,6 +40,10 @@ const Home: React.FC = () => {
 		navigate('/register');
 	};
 
+	const handleTheme = () => {
+		console.log('Trocar tema');
+	};
+
 	const handleMyBets = () => {
 		navigate('/my-bets', { state: { accessToken: accessToken } });
 	};
@@ -48,11 +54,6 @@ const Home: React.FC = () => {
 
 	const handleClose = () => {
 		setIsModalVisible(false);
-	};
-
-	const handlePageChange = (newPage: number, newLimit: number) => {
-		setPage(newPage);
-		setLimit(newLimit);
 	};
 
 	const onRenderHeader = () => {
@@ -178,15 +179,9 @@ const Home: React.FC = () => {
 					</div>
 				}
 
-				<ModalTable
-					isModalVisible={isModalVisible}
-					page={page}
-					limit={limit}
-					onClose={handleClose}
-					onPageChange={handlePageChange}
-					accessToken={accessToken}
-				/>
+				<ModalTable isModalVisible={isModalVisible} onClose={handleClose} />
 			</Content>
+			<FloatButton onClick={handleTheme} shape="square" icon={<FormatPainterOutlined />} />
 		</Layout>
 	);
 };

@@ -111,9 +111,8 @@ const Register: React.FC = () => {
 							message.error(response.message);
 						}
 					})
-					.catch((res) => {
+					.catch(() => {
 						message.error('Não foi possivel realizar seu cadastro!');
-						console.error(res);
 					});
 			} else {
 				message.error('As senhas não coincidem!');

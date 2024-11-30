@@ -109,11 +109,7 @@ export type DataType = {
 
 export interface ModalTableProps {
 	isModalVisible: boolean;
-	page: number;
-	limit: number;
 	onClose: () => void;
-	onPageChange: (page: number, limit: number) => void;
-	accessToken: string;
 }
 
 export interface IPagination {

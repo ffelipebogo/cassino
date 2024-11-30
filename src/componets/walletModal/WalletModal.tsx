@@ -1,53 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Modal, Table, Button, Input, Select, Space, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import {
-	IPagination,
-	ModalTableProps,
-	MyTransactionType,
-	TransactionType,
-} from '../../types/InterfaceType';
+import { ModalTableProps, MyTransactionType, TransactionType } from '../../types/Interfaces';
 import request from '../../api/request';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 const { Option } = Select;
 
-const ModalTable: React.FC<ModalTableProps> = ({
-	isModalVisible,
-	page,
-	limit,
-	onClose,
-	onPageChange,
-	accessToken,
-}) => {
+const ModalTable: React.FC<ModalTableProps> = ({ isModalVisible, onClose }) => {
+	const statePlayer = useSelector((state: RootState) => state.player);
+
 	const [filteredData, setFilteredData] = useState<TransactionType[]>();
 	const [dataSource, setDataSource] = useState<MyTransactionType>();
 	const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
 	const [idFilter, setIdFilter] = useState<string | undefined>(undefined);
 	const [loading, setLoading] = useState<boolean>(false);
+	const [page, setPage] = useState<number>(1);
+	const [limit, setLimit] = useState<number>(10);
+	const [total, setTotal] = useState<number>(0);
 
-	useEffect(() => {
-		if (!accessToken) {
-			return;
-		}
+	const fetchTransactions = useCallback(async () => {
+		if (!statePlayer.accessToken) return;
+
 		setLoading(true);
 		const headers: HeadersInit = {
-			Authorization: `Bearer ${accessToken}`,
+			Authorization: `Bearer ${statePlayer.accessToken}`,
 		};
+		try {
+			const response = await request.get(
+				`/my-transactions?page=${page}&limit=${limit}`,
+				headers,
+			);
 
-		request
-			.get(`/my-transactions?page=${1}&limit=${10}`, headers)
-			.then((response) => {
-				if (response) {
-					setLoading(false);
-					const resp: MyTransactionType = response as MyTransactionType;
-					setDataSource(resp);
-					setFilteredData(resp.data);
-				}
-			})
-			.catch(() => {
-				message.error('Não foi possivel carregar as informações');
-			});
-	}, [accessToken]);
+			const resp: MyTransactionType = response as MyTransactionType;
+			setDataSource(resp);
+			setFilteredData(resp.data);
+			setTotal(resp.total);
+		} catch {
+			message.error('Não foi possivel carregar as informações');
+		} finally {
+			setLoading(false);
+		}
+	}, [page, limit, statePlayer.accessToken]);
+
+	useEffect(() => {
+		fetchTransactions();
+	}, [fetchTransactions]);
 
 	const handleTypeFilterChange = (value: string) => {
 		setTypeFilter(value);
@@ -57,23 +56,15 @@ const ModalTable: React.FC<ModalTableProps> = ({
 		setIdFilter(e.target.value);
 	};
 
-	const handleApplyFilters = () => {
-		let filtered = dataSource?.data;
-		if (typeFilter) {
-			filtered = filtered?.filter((item) => item.type == typeFilter);
-		}
-		if (idFilter) {
-			filtered = filtered?.filter((item) => item.id.includes(idFilter));
-		}
-		setFilteredData(filtered);
-	};
+	const handleApplyFilters = useCallback(() => {
+		if (!dataSource?.data) return;
 
-	const handleTableChange = (pagination: IPagination) => {
-		const { current, pageSize } = pagination;
-		if (!filteredData) {
-			onPageChange(current || 1, pageSize || 10);
-		}
-	};
+		let filtered = [...dataSource.data];
+		if (typeFilter) filtered = filtered.filter((item) => item.type === typeFilter);
+		if (idFilter) filtered = filtered.filter((item) => item.id.includes(idFilter));
+
+		setFilteredData(filtered);
+	}, [typeFilter, idFilter, dataSource]);
 
 	const columns: ColumnsType<TransactionType> = [
 		{
@@ -136,9 +127,11 @@ const ModalTable: React.FC<ModalTableProps> = ({
 					pagination={{
 						current: page,
 						pageSize: limit,
-						total: 9,
-						onChange: (page, pageSize) =>
-							handleTableChange({ current: page, pageSize }),
+						total: total,
+						onChange: (page, pageSize) => {
+							setPage(page);
+							setLimit(pageSize);
+						},
 					}}
 				/>
 			</Space>
