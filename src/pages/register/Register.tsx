@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input, message } from 'antd';
 import { UserOutlined, MailOutlined, LockOutlined } from '@ant-design/icons';
-import AuthForm from './../../componets/form/AuthForm';
+import AuthForm from '../../componets/authForm/AuthForm';
 import { Rule } from 'antd/es/form';
 import { Field, RegisterForm, RegisterResponseType } from '../../types/Interfaces';
 import { useNavigate } from 'react-router-dom';

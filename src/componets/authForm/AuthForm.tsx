@@ -1,6 +1,7 @@
-import { Form, Button } from 'antd';
+import { Form, Button, Row, Col } from 'antd';
 import { IAuthFormProps } from '../../types/Interfaces';
 import Title from 'antd/es/typography/Title';
+import { useNavigate } from 'react-router-dom';
 
 const AuthForm = <T extends object>({
 	title,
@@ -10,6 +11,12 @@ const AuthForm = <T extends object>({
 	loading,
 	buttonText,
 }: IAuthFormProps<T>) => {
+	const navigate = useNavigate();
+
+	const goToHome = () => {
+		navigate('/');
+	};
+
 	return (
 		<div
 			style={{
@@ -65,9 +72,18 @@ const AuthForm = <T extends object>({
 					))}
 
 					<Form.Item>
-						<Button type="primary" htmlType="submit" block loading={loading}>
-							{buttonText}
-						</Button>
+						<Row gutter={[0, 10]}>
+							<Col span={24}>
+								<Button type="primary" htmlType="submit" block loading={loading}>
+									{buttonText}
+								</Button>
+							</Col>
+							<Col span={24}>
+								<Button onClick={goToHome} block>
+									Voltar
+								</Button>
+							</Col>
+						</Row>
 					</Form.Item>
 				</Form>
 			</div>

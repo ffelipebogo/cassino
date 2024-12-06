@@ -5,7 +5,7 @@ import { LockOutlined, MailOutlined } from '@ant-design/icons';
 
 import request from '../../api/request';
 import { CookieServices } from './../../services/CookieService';
-import AuthForm from '../../componets/form/AuthForm';
+import AuthForm from '../../componets/authForm/AuthForm';
 import { Field, IPlayerState, UserLogin } from '../../types/Interfaces';
 import { setPlayer } from '../../store/slices/playerSlice';
 import { useDispatch } from 'react-redux';
