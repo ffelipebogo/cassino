@@ -31,6 +31,7 @@ const BetCard = ({ title, isLogged }: IBetCardProps) => {
 	const resetInput = () => {
 		setAmount(undefined);
 		form.resetFields();
+		setLoading(false);
 	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

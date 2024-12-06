@@ -45,7 +45,7 @@ const Home: React.FC = () => {
 	};
 
 	const handleMyBets = () => {
-		navigate('/my-bets', { state: { accessToken: accessToken } });
+		navigate('/my-bets');
 	};
 
 	const showWalletModal = () => {
@@ -63,9 +63,9 @@ const Home: React.FC = () => {
 					display: 'flex',
 					justifyContent: 'space-between',
 					alignItems: 'center',
-					padding: '0 24px',
+					padding: '0 1.5rem',
 					backgroundColor: '#001529',
-					boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+					boxShadow: '0 0.125rem 0.5rem rgba(0, 0, 0, 0.15)',
 				}}
 			>
 				<Title level={2} style={{ color: '#fff', margin: 0, fontSize: '1.5rem' }}>
@@ -79,8 +79,8 @@ const Home: React.FC = () => {
 								color: '#1890ff',
 								fontSize: '1rem',
 								backgroundColor: '#e6f7ff',
-								padding: '8px 12px',
-								borderRadius: '8px',
+								padding: '0.5rem 0.75rem',
+								borderRadius: '0.5rem',
 								display: 'inline-flex',
 								alignItems: 'center',
 							}}
